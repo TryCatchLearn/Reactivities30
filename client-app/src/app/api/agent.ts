@@ -19,17 +19,34 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(undefined, error => {
+  const originalRequest = error.config;
   if (error.message === 'Network Error' && !error.response) {
     toast.error('Network error - make sure API is running!');
   }
-  const { status, data, config, headers } = error.response;
+  const { status, data, config } = error.response;
   if (status === 404) {
     history.push('/notfound');
   }
-  if (status === 401 && headers['www-authenticate'] === 'Bearer error="invalid_token", error_description="The token is expired"') {
-    window.localStorage.removeItem('jwt');
-    history.push('/')
-    toast.info('Your session has expired, please login again')
+  if (status === 401 && originalRequest.url.endsWith('refresh')) {
+    history.push('/');
+    return Promise.reject(error);
+  }
+  if (status === 401 && !originalRequest._retry) {
+    originalRequest._retry = true;
+    return axios.post('user/refresh', {
+      'token': window.localStorage.getItem('jwt'),
+      'refreshToken': window.localStorage.getItem('refreshToken')
+    }).then(res => {
+      if (res.status === 200) {
+        localStorage.setItem('jwt', res.data.token);
+        localStorage.setItem('refreshToken', res.data.refreshToken);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+        return axios(originalRequest);
+      }
+      history.push('/');
+      toast.info('Your session has expired, please login again');
+      return Promise.reject(error);
+    })   
   }
   if (
     status === 400 &&
