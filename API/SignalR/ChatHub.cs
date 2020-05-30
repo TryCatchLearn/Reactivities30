@@ -3,10 +3,12 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Application.Comments;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace API.SignalR
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         private readonly IMediator _mediator;

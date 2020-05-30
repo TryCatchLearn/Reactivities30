@@ -19,17 +19,32 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(undefined, error => {
+  const originalRequest = error.config;
   if (error.message === 'Network Error' && !error.response) {
     toast.error('Network error - make sure API is running!');
   }
-  const { status, data, config, headers } = error.response;
+  const { status, data, config } = error.response;
   if (status === 404) {
     history.push('/notfound');
   }
-  if (status === 401 && headers['www-authenticate'] === 'Bearer error="invalid_token", error_description="The token is expired"') {
+  if (status === 401 && originalRequest.url.endsWith('refresh')) {
     window.localStorage.removeItem('jwt');
+    window.localStorage.removeItem('refreshToken');
     history.push('/')
-    toast.info('Your session has expired, please login again')
+    toast.info('Your session has expired, please login again');
+    return Promise.reject(error);
+  }
+  if (status === 401 && !originalRequest._retry) {
+    originalRequest._retry = true;
+    return axios.post('user/refresh', {
+      'token': window.localStorage.getItem('jwt'),
+      'refreshToken': window.localStorage.getItem('refreshToken')
+    }).then(res => {
+        window.localStorage.setItem('jwt', res.data.token);
+        window.localStorage.setItem('refreshToken', res.data.refreshToken);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+        return axios(originalRequest);
+    })
   }
   if (
     status === 400 &&
@@ -93,7 +108,16 @@ const User = {
   register: (user: IUserFormValues): Promise<IUser> =>
     requests.post(`/user/register`, user),
   fbLogin: (accessToken: string) =>
-    requests.post(`/user/facebook`, {accessToken})
+    requests.post(`/user/facebook`, {accessToken}),
+  refreshToken: (token: string, refreshToken: string) => {
+    return axios.post(`/user/refresh`, {token, refreshToken})
+      .then(res => {
+        window.localStorage.setItem('jwt', res.data.token);
+        window.localStorage.setItem('refreshToken', res.data.refreshToken);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+        return res.data.token;
+      })
+  }
 };
 
 const Profiles = {
