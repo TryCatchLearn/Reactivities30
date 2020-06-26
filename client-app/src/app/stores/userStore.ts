@@ -69,6 +69,7 @@ export default class UserStore {
       runInAction(() => {
         this.user = user;
         this.rootStore.commonStore.setToken(user.token);
+        this.rootStore.commonStore.setRefreshToken(user.refreshToken);
         this.rootStore.modalStore.closeModal();
         this.loading = false;
       })

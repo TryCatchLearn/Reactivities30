@@ -19,11 +19,11 @@ export default class CommonStore {
 
         reaction(
             () => this.refreshToken,
-            token => {
-                if (token) {
-                    window.localStorage.setItem('refreshToken', token);
+            refreshToken => {
+                if (refreshToken) {
+                    window.localStorage.setItem('refreshToken', refreshToken);
                 } else {
-                    window.localStorage.removeItem('refreshToken')
+                    window.localStorage.removeItem('refreshToken');
                 }
             }
         )

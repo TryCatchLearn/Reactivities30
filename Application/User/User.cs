@@ -1,3 +1,5 @@
+using System;
+
 namespace Application.User
 {
     public class User

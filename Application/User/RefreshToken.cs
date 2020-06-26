@@ -16,7 +16,7 @@ namespace Application.User
         public class Query : IRequest<User>
         {
             public string Username { get; set; }
-            public string Token { get; set; }
+            public string Token { get; set; }    
             public string RefreshToken { get; set; }
         }
 
@@ -24,20 +24,19 @@ namespace Application.User
         {
             private readonly UserManager<AppUser> _userManager;
             private readonly IJwtGenerator _jwtGenerator;
+
             public Handler(UserManager<AppUser> userManager, IJwtGenerator jwtGenerator)
             {
-                _jwtGenerator = jwtGenerator;
                 _userManager = userManager;
+                _jwtGenerator = jwtGenerator;
+            }
             }
 
             public async Task<User> Handle(Query request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.FindByNameAsync(request.Username);
-
                 if (user == null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiry < DateTime.Now)
-                {
                     throw new RestException(HttpStatusCode.Unauthorized);
-                }
 
                 user.RefreshToken = _jwtGenerator.GenerateRefreshToken();
                 user.RefreshTokenExpiry = DateTime.Now.AddDays(30);

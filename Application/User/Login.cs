@@ -59,7 +59,6 @@ namespace Application.User
 
                     await _userManager.UpdateAsync(user);
 
-                    // TODO: generate token
                     return new User
                     {
                         DisplayName = user.DisplayName,

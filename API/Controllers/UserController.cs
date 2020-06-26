@@ -71,8 +71,9 @@ namespace API.Controllers
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
             var jwtSecurityToken = securityToken as JwtSecurityToken;
-            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512, StringComparison.InvariantCultureIgnoreCase))
-                throw new SecurityTokenException("Invalid Token");
+            if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha512,
+                StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
 
             return principal;
         }
