@@ -76,7 +76,7 @@ const requests = {
 
 const Activities = {
   list: (params: URLSearchParams): Promise<IActivitiesEnvelope> =>
-    axios.get('/activities', {params: params}).then(responseBody),
+    axios.get('/activities', { params: params }).then(responseBody),
   details: (id: string) => requests.get(`/activities/${id}`),
   create: (activity: IActivity) => requests.post('/activities', activity),
   update: (activity: IActivity) =>
@@ -93,7 +93,8 @@ const User = {
   register: (user: IUserFormValues): Promise<IUser> =>
     requests.post(`/user/register`, user),
   fbLogin: (accessToken: string) =>
-    requests.post(`/user/facebook`, {accessToken})
+    requests.post(`/user/facebook`, { accessToken }),
+  refreshToken: (): Promise<IUser> => requests.post(`/user/refreshToken`, {})
 };
 
 const Profiles = {
