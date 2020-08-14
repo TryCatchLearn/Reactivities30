@@ -4,6 +4,7 @@ import { history } from '../..';
 import { toast } from 'react-toastify';
 import { IUser, IUserFormValues } from '../models/user';
 import { IProfile, IPhoto } from '../models/profile';
+import { request } from 'http';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
@@ -94,7 +95,11 @@ const User = {
     requests.post(`/user/register`, user),
   fbLogin: (accessToken: string) =>
     requests.post(`/user/facebook`, { accessToken }),
-  refreshToken: (): Promise<IUser> => requests.post(`/user/refreshToken`, {})
+  refreshToken: (): Promise<IUser> => requests.post(`/user/refreshToken`, {}),
+  verifyEmail: (token: string, email: string): Promise<void> =>
+    requests.post(`/user/verifyEmail`, { token, email }),
+  resendVerifyEmailConfirm: (email: string): Promise<void> =>
+    requests.get(`/user/resendEmailVerification?email=${email}`)
 };
 
 const Profiles = {

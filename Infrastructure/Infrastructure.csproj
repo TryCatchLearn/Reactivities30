@@ -5,6 +5,7 @@
   <ItemGroup>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="5.6.0"/>
     <PackageReference Include="CloudinaryDotNet" Version="1.8.0"/>
+    <PackageReference Include="SendGrid" Version="9.20.0"/>
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
