@@ -4,7 +4,6 @@ import { history } from '../..';
 import { toast } from 'react-toastify';
 import { IUser, IUserFormValues } from '../models/user';
 import { IProfile, IPhoto } from '../models/profile';
-import { request } from 'http';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
