@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.0.0"/>
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.0.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.18"/>
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0"/>
   </ItemGroup>
 </Project>
